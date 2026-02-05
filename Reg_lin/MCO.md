@@ -12,6 +12,7 @@ La méthode des moindres carrés est une technique mathématique permettant d’
 ## 2. Problème fondamental
 
 On considère un ensemble de données expérimentales :
+
 $$
 (x_1,y_1),(x_2,y_2),\dots,(x_n,y_n)
 $$
@@ -223,4 +224,5 @@ La méthode des moindres carrés :
 Elle s’étend naturellement aux modèles non linéaires et probabilistes.
 
 ---
+
 
