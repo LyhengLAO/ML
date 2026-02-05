@@ -12,14 +12,14 @@ La méthode des moindres carrés est une technique mathématique permettant d’
 ## 2. Problème fondamental
 
 On considère un ensemble de données expérimentales :
-\[
+$$
 (x_1,y_1),(x_2,y_2),\dots,(x_n,y_n)
-\]
+$$
 
 On cherche à approximer ces données par une fonction linéaire :
-\[
+$$
 y = ax + b
-\]
+$$
 
 En général, il n’existe pas de droite passant exactement par tous les points.  
 On cherche donc la droite qui **approxime au mieux** les données.
@@ -223,3 +223,4 @@ La méthode des moindres carrés :
 Elle s’étend naturellement aux modèles non linéaires et probabilistes.
 
 ---
+
