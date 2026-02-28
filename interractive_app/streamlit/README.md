@@ -4,7 +4,7 @@ Cheatsheet pratique pour créer rapidement des applications avec **Streamlit**.
 
 ---
 
-## 📦 Installation & lancement
+## Installation & lancement
 ```bash
 pip install streamlit
 streamlit hello
@@ -21,7 +21,7 @@ st.write("Hello 👋")
 
 ---
 
-## ✍️ Texte & mise en page
+## Texte & mise en page
 ```python
 st.title("Titre")
 st.header("Header")
@@ -63,7 +63,7 @@ st.sidebar.write("Options")
 
 ---
 
-## 🎛️ Widgets (inputs)
+## Widgets (inputs)
 ```python
 st.button("Clique")
 st.checkbox("Activer", value=True)
@@ -91,7 +91,7 @@ if ok:
 
 ---
 
-## 📊 Données
+## Données
 ```python
 import pandas as pd
 
@@ -109,7 +109,7 @@ st.metric("CA", "120k€", "+5%")
 
 ---
 
-## 📈 Graphiques
+## Graphiques
 ### Streamlit natif
 ```python
 st.line_chart(df)
@@ -134,7 +134,7 @@ st.plotly_chart(fig, use_container_width=True)
 
 ---
 
-## 🖼️ Médias
+## Médias
 ```python
 st.image("img.png", caption="Image", use_container_width=True)
 st.audio("sound.mp3")
@@ -143,7 +143,7 @@ st.video("video.mp4")
 
 ---
 
-## 🚦 Messages & UX
+## Messages & UX
 ```python
 st.success("OK")
 st.info("Info")
@@ -157,7 +157,7 @@ with st.spinner("Chargement..."):
 
 ---
 
-## 🧭 Navigation (multi-pages)
+## Navigation (multi-pages)
 **Via dossier `pages/`**
 ```
 app.py
@@ -177,7 +177,7 @@ else:
 
 ---
 
-## 🧠 Session State
+## Session State
 ```python
 if "count" not in st.session_state:
     st.session_state.count = 0
@@ -190,7 +190,7 @@ st.write(st.session_state.count)
 
 ---
 
-## ⚡ Cache & performance
+## Cache & performance
 ```python
 @st.cache_data
 def load_data():
@@ -203,7 +203,7 @@ def load_model():
 
 ---
 
-## 🔑 Secrets & config
+## Secrets & config
 **`.streamlit/secrets.toml`**
 ```toml
 API_KEY = "xxx"
@@ -214,7 +214,7 @@ key = st.secrets["API_KEY"]
 
 ---
 
-## ⛔ Stop & rerun
+## Stop & rerun
 ```python
 st.stop()
 st.rerun()
@@ -222,7 +222,7 @@ st.rerun()
 
 ---
 
-## 📤 Téléchargement
+## Téléchargement
 ```python
 st.download_button(
     "Télécharger",
@@ -234,7 +234,7 @@ st.download_button(
 
 ---
 
-## 🚀 Déploiement (rapide)
+## Déploiement (rapide)
 - Streamlit Community Cloud (GitHub)
 - Docker
 - Hugging Face Spaces
@@ -242,5 +242,5 @@ st.download_button(
 
 ---
 
-💡 *Tip* : Streamlit relance le script **de haut en bas** à chaque interaction.
+*Tip* : Streamlit relance le script **de haut en bas** à chaque interaction.
 
