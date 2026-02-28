@@ -1,0 +1,16 @@
+<h2>Analyse</h2>
+<p>Lignes : {{ shape[0] }} | Colonnes : {{ shape[1] }}</p>
+
+<h3>Aperçu</h3>
+{{ head|safe }}
+
+<h3>Types</h3>
+{{ dtypes|safe }}
+
+<h3>Valeurs manquantes</h3>
+{{ missing|safe }}
+
+<h3>Description</h3>
+{{ describe|safe }}
+
+<a href="/viz">Aller à la visualisation</a>

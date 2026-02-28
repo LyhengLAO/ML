@@ -1,0 +1,22 @@
+<h2>Visualisation</h2>
+
+<form method="post">
+    X :
+    <select name="x">
+        {% for col in columns %}
+            <option value="{{ col }}">{{ col }}</option>
+        {% endfor %}
+    </select>
+
+    Graphe :
+    <select name="graph">
+        <option value="hist">Histogramme</option>
+        <option value="count">Count plot</option>
+    </select>
+
+    <button type="submit">Tracer</button>
+</form>
+
+{% if plot %}
+    <img src="/{{ plot }}" width="700">
+{% endif %}
