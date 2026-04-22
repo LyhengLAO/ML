@@ -219,7 +219,9 @@ class RAGPipeline:
             raise ValueError("La question ne peut pas être vide")
  
         t0 = time.time()
-        docs = self.retriever.invoke(question)
+        docs_with_scores = self.vector_store.similarity_search_with_score(
+            question, k=self.top_k
+        )
         retrieval_time = round(time.time() - t0, 3)
  
         t1 = time.time()
@@ -227,8 +229,8 @@ class RAGPipeline:
         generation_time = round(time.time() - t1, 3)
  
         sources = [
-            {"content": d.page_content[:200], "metadata": d.metadata}
-            for d in docs
+            {"content": d.page_content[:200], "metadata": d.metadata, "score": round(float(score), 4)}
+            for d, score in docs_with_scores
         ]
  
         return RAGResult(
