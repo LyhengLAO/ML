@@ -30,7 +30,6 @@ from pathlib import Path
 import sys
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
-import config
 
 logger = logging.getLogger(__name__)
 
@@ -202,6 +201,7 @@ class RAGEvaluator:
         if verbose:
             print("  Calcul des métriques RAGAS...")
 
+        from ragas import RunConfig
         ragas_result = evaluate(
             dataset=dataset,
             metrics=[
@@ -213,6 +213,7 @@ class RAGEvaluator:
             llm=self._get_ragas_llm(),
             embeddings=self._get_ragas_embeddings(),
             raise_exceptions=False,
+            run_config=RunConfig(timeout=600, max_workers=1, max_wait=600), # augmenter les timeouts pour éviter les erreurs sur de longues évaluations
         )
 
         eval_time = round(time.time() - t0, 2)
