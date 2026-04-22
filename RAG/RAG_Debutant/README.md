@@ -89,7 +89,7 @@ rag-langchain/
 
 ```bash
 # 1. Installer les dépendances
-pip install -r requirements.txt
+pip install -r requirements.txt # vaut mieux utilise le python 3.11
 
 # 2. Installer Ollama + télécharger un modèle
 curl -fsSL https://ollama.ai/install.sh | sh
