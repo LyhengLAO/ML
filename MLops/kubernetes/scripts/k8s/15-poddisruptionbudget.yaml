@@ -1,0 +1,51 @@
+# ============================================
+# 15-poddisruptionbudget.yaml
+# PodDisruptionBudget (PDB) : protège contre les interruptions de service.
+# Un PDB définit le nombre minimum de pods qui doivent rester
+# disponibles pendant une "perturbation volontaire" (planned disruption) :
+#   - Vidage d'un nœud (kubectl drain node) lors d'une maintenance
+#   - Mise à jour Kubernetes (upgrade du cluster)
+#   - Scale down du nombre de nœuds
+#
+# IMPORTANT : le PDB ne protège PAS contre les pannes involontaires
+# (crash d'un nœud, OOMKilled, etc.). Il s'applique uniquement aux
+# opérations déclenchées manuellement par un administrateur.
+#
+# Prérequis : le Deployment doit avoir au moins "minAvailable" pods sains.
+# ============================================
+
+# Version de l'API pour les ressources de politique.
+apiVersion: policy/v1
+
+# Type de ressource : PodDisruptionBudget = budget de perturbation des pods.
+kind: PodDisruptionBudget
+
+# Métadonnées d'identification de la ressource.
+metadata:
+
+  # Nom du PDB.
+  name: ml-api-pdb
+
+  # Namespace cible.
+  namespace: ml-demo
+
+# Spécifications du PDB.
+spec:
+
+  # minAvailable : nombre minimum de pods qui doivent rester disponibles
+  # pendant une perturbation volontaire.
+  # Valeur 2 : si on a 3 pods et qu'on draine un nœud, Kubernetes s'assure
+  # que les 2 autres pods sont sains AVANT de terminer le pod sur le nœud drainé.
+  # Si ce n'est pas possible (ex: seulement 1 pod sain), l'opération est bloquée.
+  minAvailable: 2
+
+  # Alternative commentée : maxUnavailable
+  # maxUnavailable: 1
+  # Signification : au plus 1 pod peut être indisponible à la fois.
+  # Equivalent à minAvailable: N-1 (où N est le nombre de répliques).
+  # maxUnavailable est plus flexible car il s'adapte au nombre de répliques.
+
+  # Sélecteur : quels pods sont protégés par ce PDB ?
+  selector:
+    matchLabels:
+      app: ml-api  # Protège tous les pods du Deployment ml-api.

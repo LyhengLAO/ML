@@ -1,0 +1,95 @@
+# ============================================
+# 06-redis-deployment.yaml
+# Cache Redis pour les features et résultats ML.
+# On utilise un Deployment (et non un StatefulSet) car :
+#   - Redis est ici un cache temporaire (les données peuvent être perdues).
+#   - Pas besoin de stockage persistant (pas de PVC).
+#   - Si le pod redémarre, le cache est simplement vidé (acceptable).
+# ============================================
+
+# Version de l'API pour les ressources apps (Deployment, StatefulSet...).
+apiVersion: apps/v1
+
+# Type de ressource : Deployment = gestion de pods sans identité stable.
+# Kubernetes s'assure qu'il y a toujours "replicas" pods en état Running.
+kind: Deployment
+
+# Métadonnées d'identification de la ressource.
+metadata:
+
+  # Nom du Deployment.
+  name: redis
+
+  # Namespace cible.
+  namespace: ml-demo
+
+# Spécifications du Deployment.
+spec:
+
+  # Nombre de répliques : 1 seule instance Redis.
+  # Redis ne supporte pas nativement le multi-maître sans configuration spéciale.
+  replicas: 1
+
+  # Sélecteur : détermine quels pods sont gérés par ce Deployment.
+  selector:
+    matchLabels:
+      app: redis  # Sélectionne les pods ayant le label app=redis.
+
+  # Template : modèle de pod que le Deployment va créer et maintenir.
+  template:
+
+    # Métadonnées appliquées à chaque pod créé.
+    metadata:
+      labels:
+        app: redis  # Label qui permet au Service et au Deployment de trouver ce pod.
+
+    # Spécifications des conteneurs dans le pod.
+    spec:
+
+      # Liste des conteneurs (un seul ici : redis).
+      containers:
+
+      - name: redis                # Nom du conteneur dans le pod.
+        image: redis:7-alpine      # Image Docker : Redis 7, variante Alpine (très légère, ~30 Mo).
+
+        # Ports exposés par le conteneur.
+        ports:
+        - containerPort: 6379  # Port standard Redis.
+          name: redis          # Nom symbolique du port.
+
+        # Arguments passés au processus Redis au démarrage.
+        # Permet de configurer Redis sans fichier de configuration.
+        args:
+        - redis-server          # Commande principale : démarrer le serveur Redis.
+        - --maxmemory           # Option suivante : définir la mémoire max utilisée par Redis.
+        - 64mb                  # Limite à 64 Mo. Au-delà, Redis applique la politique d'expulsion.
+        - --maxmemory-policy    # Option : politique d'expulsion quand la mémoire est pleine.
+        - allkeys-lru           # Expulse les clés les moins récemment utilisées (LRU = Least Recently Used).
+                                # "allkeys" = toutes les clés sont candidates (même sans TTL défini).
+
+        # Ressources CPU et mémoire allouées au conteneur.
+        resources:
+
+          # Ressources minimales garanties.
+          requests:
+            cpu: 50m      # 50 millicores = 0.05 CPU. Redis est très léger en mode cache.
+            memory: 64Mi  # 64 Mo garantis (cohérent avec le maxmemory de Redis).
+
+          # Ressources maximales autorisées.
+          limits:
+            cpu: 200m      # Maximum 0.2 CPU.
+            memory: 128Mi  # Maximum 128 Mo (marge pour le overhead Redis au-delà des données).
+
+        # Sonde de disponibilité : vérifie que Redis accepte des connexions TCP.
+        # tcpSocket est plus simple que exec car Redis n'a pas de commande "isready".
+        readinessProbe:
+          tcpSocket:
+            port: 6379   # Tente une connexion TCP sur le port Redis.
+          periodSeconds: 5  # Vérifie toutes les 5 secondes.
+          # Pas de initialDelaySeconds : Redis démarre en moins d'une seconde.
+
+        # Sonde de vie : redémarre le conteneur si Redis ne répond plus du tout.
+        livenessProbe:
+          tcpSocket:
+            port: 6379
+          periodSeconds: 30  # Vérifie toutes les 30 secondes.

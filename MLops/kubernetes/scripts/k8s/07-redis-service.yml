@@ -1,0 +1,43 @@
+# ============================================
+# 07-redis-service.yaml
+# Service ClusterIP standard pour Redis.
+# Contrairement à PostgreSQL, Redis n'a pas besoin d'un service
+# headless car il n'y a qu'une seule instance (pas de StatefulSet).
+# Les pods de l'API se connectent via redis://redis:6379
+# grâce à ce Service qui résout "redis" en interne.
+# ============================================
+
+# Version de l'API Kubernetes. "v1" pour les ressources de base.
+apiVersion: v1
+
+# Type de ressource : Service = point d'accès réseau stable vers des pods.
+kind: Service
+
+# Métadonnées d'identification de la ressource.
+metadata:
+
+  # Nom du Service. Devient le nom DNS interne "redis.ml-demo.svc.cluster.local".
+  # L'API se connecte simplement à "redis:6379" grâce à la résolution DNS du cluster.
+  name: redis
+
+  # Namespace cible.
+  namespace: ml-demo
+
+# Spécifications du Service.
+spec:
+
+  # Type ClusterIP : le Service reçoit une IP virtuelle stable uniquement accessible
+  # depuis l'intérieur du cluster. C'est le type par défaut.
+  # Autres types possibles : NodePort (accessible depuis l'extérieur via un port du nœud),
+  # LoadBalancer (crée un load balancer cloud), ExternalName (alias DNS externe).
+  type: ClusterIP
+
+  # Sélecteur : le Service route le trafic vers les pods ayant ces labels.
+  selector:
+    app: redis  # Correspond au label "app: redis" dans le template du Deployment Redis.
+
+  # Ports exposés par ce Service.
+  ports:
+  - port: 6379        # Port du Service (écouté dans le cluster par les clients).
+    targetPort: 6379  # Port du conteneur Redis vers lequel le trafic est redirigé.
+    name: redis       # Nom symbolique du port (utilisé dans les NetworkPolicies).

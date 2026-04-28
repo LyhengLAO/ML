@@ -1,0 +1,127 @@
+# ============================================
+# 09-api-deployment.yaml
+# Déploiement de l'API de scoring ML.
+# 3 répliques pour répartir la charge (load balancing).
+# imagePullPolicy: Never car l'image est construite localement
+# dans le daemon Docker de Minikube :
+#   eval $(minikube docker-env)   # Linux/Mac
+#   minikube docker-env | Invoke-Expression  # Windows
+#   docker build -t ml-api:1.0 .
+# ============================================
+
+# Version de l'API pour les ressources apps.
+apiVersion: apps/v1
+
+# Type de ressource : Deployment = gestion de pods sans identité stable.
+# Kubernetes s'assure toujours qu'il y a exactement "replicas" pods Running.
+kind: Deployment
+
+# Métadonnées d'identification de la ressource.
+metadata:
+
+  # Nom du Deployment.
+  name: ml-api
+
+  # Namespace cible.
+  namespace: ml-demo
+
+  # Labels sur le Deployment lui-même (pas sur les pods).
+  labels:
+    app: ml-api
+
+# Spécifications du Deployment.
+spec:
+
+  # Nombre de pods à maintenir en permanence.
+  # 3 répliques = 3 pods qui reçoivent chacun une partie du trafic.
+  replicas: 3
+
+  # Nombre de versions précédentes conservées pour un éventuel rollback.
+  # kubectl rollout undo deployment/ml-api reviendra à la version précédente.
+  revisionHistoryLimit: 3
+
+  # Stratégie de mise à jour lors d'un changement de configuration ou d'image.
+  strategy:
+    type: RollingUpdate  # Mise à jour progressive (un pod à la fois). Alternative : Recreate (downtime).
+    rollingUpdate:
+      maxSurge: 1        # Autorise 1 pod supplémentaire pendant la mise à jour (3+1=4 pods max).
+      maxUnavailable: 0  # Aucun pod ne peut être indisponible pendant la MAJ → zéro downtime.
+
+  # Sélecteur : détermine quels pods sont gérés par ce Deployment.
+  selector:
+    matchLabels:
+      app: ml-api  # Gère tous les pods ayant le label app=ml-api.
+
+  # Template : modèle de pod créé par le Deployment.
+  template:
+
+    # Métadonnées des pods créés (doit correspondre au sélecteur ci-dessus).
+    metadata:
+      labels:
+        app: ml-api  # Label appliqué à chaque pod, utilisé par le Service pour le routage.
+
+    # Spécifications du pod.
+    spec:
+
+      # Liste des conteneurs dans le pod.
+      containers:
+
+      - name: api                  # Nom du conteneur.
+        image: ml-api:1.0          # Image Docker construite localement dans Minikube.
+        imagePullPolicy: Never     # NE PAS essayer de télécharger l'image depuis un registre.
+                                   # Obligatoire quand l'image est buildée localement dans Minikube.
+
+        # Ports exposés par le conteneur.
+        ports:
+        - containerPort: 8000  # Port sur lequel l'API FastAPI/Flask écoute.
+          name: http           # Nom symbolique utilisé dans les probes et Services.
+
+        # envFrom : injecte TOUTES les clés d'un ConfigMap ou Secret comme variables d'environnement.
+        # Plus pratique que de lister chaque variable individuellement.
+        envFrom:
+        - configMapRef:
+            name: ml-api-config   # Injecte toutes les vars de 01-configmap.yml (LOG_LEVEL, DB_HOST...).
+        - secretRef:
+            name: ml-api-secrets  # Injecte toutes les vars de 02-secret.yml (DB_PASSWORD...).
+
+        # Variables d'environnement supplémentaires (injectées individuellement).
+        env:
+
+        # POD_NAME : injecte le nom du pod courant via la Downward API.
+        # La Downward API permet aux pods de connaître leurs propres métadonnées Kubernetes.
+        # Chaque pod aura un POD_NAME différent (ml-api-xxx-yyy), visible dans les réponses API.
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name  # Lit le nom du pod depuis ses propres métadonnées.
+
+        # Ressources CPU et mémoire allouées au conteneur.
+        resources:
+
+          # Ressources minimales garanties (le scheduler utilise ces valeurs pour placer le pod).
+          requests:
+            cpu: 100m      # 100 millicores = 0.1 CPU.
+            memory: 128Mi  # 128 Mo RAM.
+
+          # Ressources maximales (le pod est throttlé/tué s'il dépasse).
+          limits:
+            cpu: 500m      # Maximum 0.5 CPU.
+            memory: 256Mi  # Maximum 256 Mo RAM.
+
+        # Sonde de disponibilité : Kubernetes arrête d'envoyer du trafic tant que cette sonde échoue.
+        # Le pod n'est pas tué, juste retiré du load balancer jusqu'à ce qu'il soit prêt.
+        readinessProbe:
+          httpGet:
+            path: /ready   # Endpoint HTTP de l'API qui retourne 200 quand prêt (modèle chargé etc.).
+            port: http     # Utilise le nom symbolique du port (résolu vers 8000).
+          initialDelaySeconds: 5   # Attend 5s après le démarrage avant la première vérification.
+          periodSeconds: 5         # Vérifie toutes les 5 secondes.
+
+        # Sonde de vie : si cette sonde échoue, Kubernetes redémarre le conteneur.
+        # Détecte les deadlocks ou crashs silencieux de l'API.
+        livenessProbe:
+          httpGet:
+            path: /health  # Endpoint HTTP simple qui retourne 200 si le processus est vivant.
+            port: http
+          initialDelaySeconds: 15  # Attend 15s (l'API a besoin de temps pour charger le modèle ML).
+          periodSeconds: 30        # Vérifie toutes les 30 secondes.

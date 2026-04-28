@@ -1,0 +1,62 @@
+# ============================================
+# 16-servicemonitor.yaml
+# ServiceMonitor : configuration de scraping Prometheus.
+# Le ServiceMonitor est une ressource custom (CRD) définie par
+# Prometheus Operator. Il indique à Prometheus quels Services
+# scraper (collecter les métriques) et à quelle fréquence.
+#
+# Prérequis :
+#   helm install monitoring prometheus-community/kube-prometheus-stack \
+#     --set grafana.sidecar.dashboards.enabled=true
+#
+# Flow : Prometheus Operator → lit le ServiceMonitor → configure
+#        Prometheus → scrape ml-api:8000/metrics toutes les 15s
+# ============================================
+
+# Groupe API custom de Prometheus Operator (installé avec kube-prometheus-stack).
+# Ce n'est pas une ressource Kubernetes native, mais une CRD (Custom Resource Definition).
+apiVersion: monitoring.coreos.com/v1
+
+# Type de ressource : ServiceMonitor = configuration de scraping pour Prometheus Operator.
+kind: ServiceMonitor
+
+# Métadonnées d'identification de la ressource.
+metadata:
+
+  # Nom du ServiceMonitor.
+  name: ml-api-monitor
+
+  # Namespace cible. Le ServiceMonitor est dans ml-demo mais Prometheus est dans monitoring.
+  # Prometheus Operator peut surveiller des ServiceMonitors dans d'autres namespaces.
+  namespace: ml-demo
+
+  # Labels sur le ServiceMonitor.
+  labels:
+    # CRITIQUE : ce label doit correspondre au "serviceMonitorSelector" configuré dans
+    # la ressource Prometheus du kube-prometheus-stack.
+    # Par défaut, kube-prometheus-stack cherche les ServiceMonitors avec "release: monitoring".
+    # Sans ce label, Prometheus ignore ce ServiceMonitor.
+    release: monitoring
+
+# Spécifications du ServiceMonitor.
+spec:
+
+  # namespaceSelector : dans quel(s) namespace(s) chercher les Services à scraper ?
+  namespaceSelector:
+    matchNames:
+    - ml-demo  # Cherche le Service dans le namespace ml-demo.
+
+  # selector : quel Service scraper (parmi ceux trouvés dans les namespaces ci-dessus) ?
+  selector:
+    matchLabels:
+      app: ml-api  # Sélectionne le Service "ml-api" (défini dans 10-api-service.yaml).
+                   # ATTENTION : le Service doit avoir ce label pour être sélectionné.
+
+  # endpoints : comment scraper les métriques depuis ce Service ?
+  endpoints:
+
+  - port: http             # Nom du port du Service à utiliser (résolu vers le port 80 → 8000 sur le pod).
+    path: /metrics         # Endpoint HTTP exposé par l'API pour les métriques Prometheus.
+                           # L'API doit exposer ses métriques au format Prometheus sur ce chemin.
+    interval: 15s          # Fréquence de scraping : Prometheus collecte les métriques toutes les 15s.
+    scrapeTimeout: 10s     # Timeout : si l'API ne répond pas en 10s, le scraping est considéré comme échoué.
