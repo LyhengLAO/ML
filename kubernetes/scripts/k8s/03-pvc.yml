@@ -1,0 +1,43 @@
+# ============================================
+# 03-pvc.yaml
+# PersistentVolumeClaim (PVC) pour le stockage persistant.
+# Un PVC est une demande de stockage faite par un pod.
+# Kubernetes trouve automatiquement un PersistentVolume (PV)
+# disponible qui correspond aux critères demandés.
+#
+# NOTE : Pour PostgreSQL, le PVC est géré directement par le
+# StatefulSet via "volumeClaimTemplates" (voir 04-postgres-statefulset.yaml).
+# Ce fichier est donc un exemple de PVC autonome, utilisable
+# pour d'autres besoins de stockage dans le projet.
+# ============================================
+
+# Version de l'API Kubernetes. "v1" pour les ressources de base.
+apiVersion: v1
+
+# Type de ressource : PersistentVolumeClaim = demande de stockage persistant.
+# Le pod demande du stockage, Kubernetes lui fournit via un PV.
+kind: PersistentVolumeClaim
+
+# Métadonnées d'identification de la ressource.
+metadata:
+
+  # Nom du PVC, référencé dans les pods via "volumes[].persistentVolumeClaim.claimName".
+  name: ml-storage
+
+  # Namespace cible : ce PVC n'est accessible que dans "ml-demo".
+  namespace: ml-demo
+
+# Spécifications du stockage demandé.
+spec:
+
+  # Modes d'accès au volume.
+  # ReadWriteOnce (RWO) : un seul nœud peut monter ce volume en lecture/écriture.
+  # Autres options : ReadOnlyMany (ROX), ReadWriteMany (RWX).
+  accessModes:
+    - ReadWriteOnce
+
+  # Ressources demandées (taille du volume).
+  resources:
+    requests:
+      # Demande 1 gigaoctet de stockage.
+      storage: 1Gi

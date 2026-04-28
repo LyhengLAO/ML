@@ -1,0 +1,172 @@
+# ============================================
+# 14-networkpolicy.yaml
+# NetworkPolicies : règles de pare-feu au niveau des pods.
+# Par défaut dans Kubernetes, TOUS les pods peuvent communiquer
+# librement entre eux, sans restriction.
+# Ces NetworkPolicies implémentent une stratégie "zero-trust" :
+#   1. On refuse TOUT par défaut (deny-all).
+#   2. On ouvre uniquement les flux nécessaires.
+#
+# Architecture des flux autorisés après ces règles :
+#   Internet → Ingress nginx → ml-api:8000
+#   Prometheus (monitoring) → ml-api:8000 (scraping métriques)
+#   ml-api → postgres:5432
+#   ml-api → redis:6379
+#   db-init → postgres:5432
+#   model-retrain → redis:6379
+# ============================================
+
+# Séparateur YAML : ce fichier contient plusieurs ressources dans un seul fichier.
+---
+
+# ─────────────────────────────────────────────
+# POLITIQUE 1 : Refuser tout trafic entrant par défaut
+# ─────────────────────────────────────────────
+# Version de l'API pour les ressources réseau.
+apiVersion: networking.k8s.io/v1
+
+# Type de ressource : NetworkPolicy = règle de pare-feu au niveau pod.
+kind: NetworkPolicy
+
+metadata:
+  name: default-deny-ingress  # Nom de cette politique.
+  namespace: ml-demo
+
+spec:
+
+  # podSelector : quels pods sont ciblés par cette politique ?
+  # {} vide = TOUS les pods du namespace ml-demo.
+  podSelector: {}
+
+  # policyTypes : cette politique s'applique au trafic entrant (Ingress).
+  # "Ingress" = trafic entrant vers les pods. "Egress" = trafic sortant des pods.
+  policyTypes:
+  - Ingress
+  # IMPORTANT : aucune règle "ingress:" n'est définie ici.
+  # Résultat : TOUT le trafic entrant est bloqué pour tous les pods du namespace.
+
+---
+
+# ─────────────────────────────────────────────
+# POLITIQUE 2 : Autoriser l'Ingress nginx et Prometheus à atteindre ml-api
+# ─────────────────────────────────────────────
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+
+metadata:
+  name: allow-ingress-to-api
+  namespace: ml-demo
+
+spec:
+
+  # podSelector : cette politique s'applique uniquement aux pods avec app=ml-api.
+  podSelector:
+    matchLabels:
+      app: ml-api
+
+  # Cette politique gère le trafic entrant vers ml-api.
+  policyTypes:
+  - Ingress
+
+  # Règles de trafic entrant autorisées.
+  ingress:
+  - from:
+
+    # Source 1 : pods venant du namespace "ingress-nginx" (le contrôleur Ingress nginx).
+    # namespaceSelector sélectionne des pods dans un autre namespace.
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: ingress-nginx  # Label standard Kubernetes du namespace.
+
+    # Source 2 : pods venant du namespace "monitoring" (Prometheus).
+    # Permet à Prometheus de scraper les métriques de ml-api.
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: monitoring
+
+    # Ports autorisés pour ce trafic entrant.
+    ports:
+    - protocol: TCP
+      port: 8000  # Port de l'API ml-api (défini dans le Deployment).
+
+---
+
+# ─────────────────────────────────────────────
+# POLITIQUE 3 : Autoriser ml-api et db-init à accéder à PostgreSQL
+# ─────────────────────────────────────────────
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+
+metadata:
+  name: allow-api-to-postgres
+  namespace: ml-demo
+
+spec:
+
+  # Cette politique protège les pods postgres : seuls les pods autorisés peuvent leur parler.
+  podSelector:
+    matchLabels:
+      app: postgres
+
+  policyTypes:
+  - Ingress
+
+  # Trafic entrant autorisé vers postgres.
+  ingress:
+  - from:
+
+    # Source 1 : pods avec le label app=ml-api (l'API de scoring).
+    - podSelector:
+        matchLabels:
+          app: ml-api
+
+    # Source 2 : pods avec le label app=db-init (le Job d'initialisation du schéma).
+    - podSelector:
+        matchLabels:
+          app: db-init
+
+    # Port PostgreSQL standard.
+    ports:
+    - protocol: TCP
+      port: 5432
+
+---
+
+# ─────────────────────────────────────────────
+# POLITIQUE 4 : Autoriser ml-api et le CronJob retrain à accéder à Redis
+# ─────────────────────────────────────────────
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+
+metadata:
+  name: allow-api-to-redis
+  namespace: ml-demo
+
+spec:
+
+  # Cette politique protège les pods redis.
+  podSelector:
+    matchLabels:
+      app: redis
+
+  policyTypes:
+  - Ingress
+
+  # Trafic entrant autorisé vers redis.
+  ingress:
+  - from:
+
+    # Source 1 : l'API de scoring (pour lire/écrire le cache de features).
+    - podSelector:
+        matchLabels:
+          app: ml-api
+
+    # Source 2 : le CronJob de ré-entraînement (pour écrire la version du modèle).
+    - podSelector:
+        matchLabels:
+          app: model-retrain
+
+    # Port Redis standard.
+    ports:
+    - protocol: TCP
+      port: 6379

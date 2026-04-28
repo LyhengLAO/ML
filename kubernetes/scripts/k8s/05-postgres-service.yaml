@@ -1,0 +1,46 @@
+# ============================================
+# 05-postgres-service.yaml
+# Service headless pour PostgreSQL.
+# Un Service headless (clusterIP: None) ne crée PAS d'IP virtuelle.
+# À la place, le DNS Kubernetes retourne directement les adresses IP
+# des pods correspondants.
+# Requis pour les StatefulSets car chaque pod doit avoir un nom DNS
+# stable et unique : postgres-0.postgres.ml-demo.svc.cluster.local
+# ============================================
+
+# Version de l'API Kubernetes. "v1" pour les ressources de base.
+apiVersion: v1
+
+# Type de ressource : Service = point d'accès réseau stable vers des pods.
+kind: Service
+
+# Métadonnées d'identification de la ressource.
+metadata:
+
+  # Nom du Service. Ce nom est CRUCIAL car :
+  #   1. Il correspond au "serviceName" dans le StatefulSet (04-postgres-statefulset.yaml).
+  #   2. Il devient le nom DNS interne : "postgres.ml-demo.svc.cluster.local"
+  #   3. Les pods de l'API se connectent via l'hôte "postgres" (défini dans le ConfigMap).
+  name: postgres
+
+  # Namespace cible.
+  namespace: ml-demo
+
+# Spécifications du Service.
+spec:
+
+  # clusterIP: None = Service headless.
+  # Pas d'IP virtuelle créée. Le DNS retourne directement les IPs des pods.
+  # Cela permet au StatefulSet de donner un nom DNS stable à chaque pod :
+  #   postgres-0.postgres.ml-demo.svc.cluster.local → IP du pod postgres-0
+  clusterIP: None
+
+  # Sélecteur : le Service route le trafic vers les pods ayant ces labels.
+  selector:
+    app: postgres  # Correspond au label "app: postgres" dans le template du StatefulSet.
+
+  # Ports exposés par ce Service.
+  ports:
+  - port: 5432        # Port du Service (écouté dans le cluster).
+    targetPort: 5432  # Port du conteneur vers lequel rediriger le trafic.
+    name: pg          # Nom symbolique du port (utilisé dans les NetworkPolicies).
