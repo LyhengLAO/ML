@@ -43,7 +43,7 @@ class DataConfig:
 
 @dataclass
 class FeaturesConfig:
-    cutoff_date: str = "2024-10-01"
+    cutoff_date: str = "2010-10-01"
     horizon_days: int = 90
     feature_cols: list = field(default_factory=lambda: [
         "recency", "frequency", "monetary",
