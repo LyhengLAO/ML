@@ -39,7 +39,7 @@ Données brutes (CSV)
                    ┌─────────────────┐        ┌──────────────────┐        ┌──────────────────┐
                    │  src/           │        │  src/monitoring/ │        │  api/            │
                    │  orchestration/ │        │  drift.py (PSI)  │        │  FastAPI REST    │
-                   │  pipeline.py   │        │  report.py       │        │  /predict        │
+                   │  pipeline.py    │        │  report.py       │        │  /predict        │
                    └─────────────────┘        └──────────────────┘        └──────────────────┘
 ```
 
