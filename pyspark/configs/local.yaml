@@ -1,0 +1,21 @@
+# ──────────────────────────────────────────────────────────────────────────────
+# configs/local.yaml — Surcharges pour l'environnement de développement local
+#
+# Seules les clés qui diffèrent de default.yaml sont listées ici.
+# ──────────────────────────────────────────────────────────────────────────────
+
+env: local
+
+spark:
+  master: "local[*]"
+  shuffle_partitions: 4        # moins de partitions sur un laptop
+  driver_memory: "2g"
+  executor_memory: "2g"
+
+model:
+  num_trees: 20                # entraînement plus rapide en local
+  max_depth: 5
+  use_cv: false                # cross-val désactivée (lente en local)
+
+mlflow:
+  enabled: false               # pas de tracking MLflow en local par défaut

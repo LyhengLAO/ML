@@ -2,6 +2,7 @@ import pandas as pd
 import shutil
 from pathlib import Path
 import sys
+from typing import Optional
 from urllib.request import urlretrieve
 import zipfile
 import requests

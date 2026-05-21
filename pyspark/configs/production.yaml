@@ -1,0 +1,37 @@
+# ──────────────────────────────────────────────────────────────────────────────
+# configs/production.yaml — Surcharges pour l'environnement de production
+#
+# Seules les clés qui diffèrent de default.yaml sont listées ici.
+# Les secrets (mots de passe, tokens) ne doivent PAS être ici —
+# passez-les via des variables d'environnement (ex. MLFLOW__TRACKING_URI).
+# ──────────────────────────────────────────────────────────────────────────────
+
+env: production
+
+spark:
+  # En production, pointez vers votre cluster Spark/YARN/K8s
+  # master: "yarn"                     # YARN cluster
+  # master: "spark://host:7077"        # Standalone cluster
+  master: "local[*]"                   # à remplacer selon votre infra
+  shuffle_partitions: 200              # valeur recommandée pour ~10 GB de données
+  driver_memory: "4g"
+  executor_memory: "8g"
+  adaptive_enabled: true
+
+model:
+  num_trees: 100               # plus d'arbres = meilleure généralisation
+  max_depth: 10
+  min_instances_per_node: 10
+  use_cv: true                 # cross-validation activée en production
+
+mlflow:
+  enabled: true
+  tracking_uri: "http://mlflow-server:5000"   # à adapter
+  experiment_name: churn_prediction_prod
+  registered_model_name: churn_model_prod
+
+monitoring:
+  psi_threshold_warning: 0.10
+  psi_threshold_critical: 0.20          # seuil critique plus strict en prod
+  n_bins: 10
+  monitoring_path: output/monitoring

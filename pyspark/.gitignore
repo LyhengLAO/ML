@@ -1,5 +1,130 @@
-.env
-data/
+# ══════════════════════════════════════════════════════════════════════════════
+# .gitignore — Pipeline ML Churn Prediction (PySpark)
+# ══════════════════════════════════════════════════════════════════════════════
+
+
+# ── Environnement virtuel Python ──────────────────────────────────────────────
+.env/
+.venv/
+venv/
+env/
+
+
+# ── Bytecode & caches Python ──────────────────────────────────────────────────
+__pycache__/
+**/__pycache__/
+*.py[cod]          # .pyc .pyo .pyd
+*.pyo
+*.pyd
+.Python
+
+
+# ── Distribution / packaging ──────────────────────────────────────────────────
+build/
+dist/
+*.egg-info/
+*.egg
+.eggs/
+MANIFEST
+
+
+# ── Tests & couverture ────────────────────────────────────────────────────────
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+*.coveragerc
+
+
+# ── Jupyter Notebooks ─────────────────────────────────────────────────────────
+.ipynb_checkpoints/
+**/.ipynb_checkpoints/
+
+
+# ── MLflow ────────────────────────────────────────────────────────────────────
+mlruns/
+mlartifacts/
+
+
+# ── Données (brutes, intermédiaires, traitées) ────────────────────────────────
+# On garde le code Python dans src/data/ mais pas les fichiers de données réels
+data/raw/
+data/interim/
+data/processed/
+data/external/
+*.csv
+*.xlsx
+*.xls
+*.zip
+*.parquet
+
+# Exceptions : garder les fichiers de config/schema dans src/data/
 !src/data/
 
-__pycache__
+
+# ── Artefacts générés par le pipeline ────────────────────────────────────────
+output/
+# Si tu veux versionner les métriques mais pas le modèle :
+# !output/metrics.json
+# !output/predictions.csv
+
+
+# ── PySpark / Hadoop temp files ───────────────────────────────────────────────
+spark-warehouse/
+metastore_db/
+derby.log
+*.log
+checkpoints/
+
+
+# ── Fichiers de secrets / variables d'environnement locales ──────────────────
+.env
+.env.*
+!.env.example        # on garde l'exemple de template
+secrets/
+*.pem
+*.key
+
+
+# ── IDEs ─────────────────────────────────────────────────────────────────────
+# JetBrains (PyCharm, IntelliJ…)
+.idea/
+*.iml
+*.iws
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# Spyder
+.spyderproject.cfg
+.spyproject/
+
+# Rope
+.ropeproject/
+
+
+# ── Système d'exploitation ────────────────────────────────────────────────────
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+
+# ── Mypy / Pyright (type checking) ───────────────────────────────────────────
+.mypy_cache/
+.pytype/
+.pyre/
+pyrightconfig.json
+
+
+# ── Profiling ─────────────────────────────────────────────────────────────────
+*.prof

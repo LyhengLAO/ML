@@ -17,8 +17,8 @@ from typing import Optional
 
 import yaml
 
-# Racine du projet (3 niveaux au-dessus de ce fichier)
-PROJECT_ROOT = Path(__file__).resolve().parents[2].parent
+# Racine du projet : src/config.py → parents[0]=src, parents[1]=pyspark (racine)
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
 
 @dataclass
@@ -72,8 +72,10 @@ class MLflowConfig:
 
 @dataclass
 class MonitoringConfig:
-    psi_threshold_warning: float = 0.10
+    psi_threshold_warning: float  = 0.10
     psi_threshold_critical: float = 0.25
+    n_bins: int                   = 10      # bins pour le calcul PSI
+    monitoring_path: str          = "output/monitoring"  # dossier des rapports
 
 
 @dataclass

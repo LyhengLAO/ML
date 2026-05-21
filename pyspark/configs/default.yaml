@@ -1,0 +1,64 @@
+# ──────────────────────────────────────────────────────────────────────────────
+# configs/default.yaml — Configuration de base (tous environnements)
+#
+# Ces valeurs sont chargées en premier ; configs/{env}.yaml les surcharge
+# ensuite ; les variables d'environnement (SECTION__KEY) ont la priorité max.
+# ──────────────────────────────────────────────────────────────────────────────
+
+env: local
+output_dir: output
+
+# ── PySpark ────────────────────────────────────────────────────────────────────
+spark:
+  app_name: ChurnPipeline
+  master: "local[*]"
+  shuffle_partitions: 8
+  driver_memory: "2g"
+  executor_memory: "2g"
+  adaptive_enabled: true
+
+# ── Données brutes ─────────────────────────────────────────────────────────────
+data:
+  raw_path: data/raw
+  interim_path: data/interim
+  processed_path: data/processed
+  external_path: data/external
+  sample_csv: data/raw/sample_transactions.csv
+  full_csv: data/raw/online_retail_II.csv
+
+# ── Features RFM + label churn ─────────────────────────────────────────────────
+features:
+  cutoff_date: "2011-09-01"     # date de séparation RFM / horizon churn
+  horizon_days: 90              # pas de vente dans les 90 j → churner (label=1)
+  feature_cols:
+    - recency
+    - frequency
+    - monetary
+    - avg_basket
+    - n_products
+    - n_countries
+    - tenure_days
+
+# ── Modèle ML ──────────────────────────────────────────────────────────────────
+model:
+  algorithm: random_forest      # random_forest | gbt | logistic
+  num_trees: 50
+  max_depth: 8
+  min_instances_per_node: 5
+  train_ratio: 0.8
+  seed: 42
+  use_cv: false
+
+# ── MLflow ─────────────────────────────────────────────────────────────────────
+mlflow:
+  enabled: false
+  tracking_uri: "file:./mlruns"
+  experiment_name: churn_prediction
+  registered_model_name: churn_model
+
+# ── Monitoring PSI ─────────────────────────────────────────────────────────────
+monitoring:
+  psi_threshold_warning: 0.10   # STABLE < 0.10 ≤ WARNING < 0.25 ≤ CRITICAL
+  psi_threshold_critical: 0.25
+  n_bins: 10
+  monitoring_path: output/monitoring

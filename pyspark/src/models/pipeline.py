@@ -15,7 +15,7 @@ from pyspark.ml.classification import (
     RandomForestClassifier, GBTClassifier, LogisticRegression
 )
 
-from churn_pipeline.config import ModelConfig
+from src.config import ModelConfig
 
 
 def build_pipeline(cfg: Optional[ModelConfig] = None,

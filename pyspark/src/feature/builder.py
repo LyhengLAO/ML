@@ -14,7 +14,7 @@ from typing import Optional
 
 from pyspark.sql import DataFrame, functions as F
 
-from churn_pipeline.config import FeaturesConfig
+from src.config import FeaturesConfig
 
 
 def build_features_and_label(df_clean: DataFrame,

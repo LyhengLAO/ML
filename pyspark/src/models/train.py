@@ -11,8 +11,8 @@ from pyspark.ml.tuning import CrossValidator, ParamGridBuilder
 from pyspark.ml.evaluation import BinaryClassificationEvaluator
 from pyspark.sql import DataFrame
 
-from churn_pipeline.config import ModelConfig
-from churn_pipeline.models.pipeline import build_pipeline
+from src.config import ModelConfig
+from src.models.pipeline import build_pipeline
 
 
 def split_data(df: DataFrame,
