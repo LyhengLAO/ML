@@ -1,0 +1,25 @@
+# Evaluating RAG Systems
+
+Evaluating a RAG system requires measuring two distinct components separately:
+the retriever and the generator. A common mistake is to judge only the final
+answer, which hides whether failures come from poor retrieval or poor generation.
+
+Retrieval is evaluated with information-retrieval metrics. Hit Rate at k measures
+whether at least one relevant document appears in the top k results. Mean
+Reciprocal Rank, or MRR, rewards placing the first relevant document higher in
+the ranking. Context recall measures the fraction of the ground-truth information
+that the retrieved context actually contains.
+
+Generation is evaluated with metrics that compare the produced answer to a
+reference or to the retrieved context. Faithfulness measures whether the answer
+is supported by the retrieved context and penalizes hallucination. Answer
+relevancy measures whether the answer actually addresses the question. Lexical
+metrics such as ROUGE compare word overlap, while semantic similarity compares
+the embedding of the answer to the embedding of a reference answer.
+
+The RAGAS framework popularized a reference-light evaluation approach using four
+core metrics: faithfulness, answer relevancy, context precision, and context
+recall. Beyond quality, practical evaluation also tracks latency and cost, since
+an accurate system that is too slow or too expensive may be unusable in
+production. Reliable evaluation depends on a curated test set of questions paired
+with known relevant documents and reference answers.

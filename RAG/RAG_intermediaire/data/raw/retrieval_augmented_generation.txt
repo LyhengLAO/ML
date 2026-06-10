@@ -1,0 +1,24 @@
+# Retrieval-Augmented Generation
+
+Retrieval-Augmented Generation, or RAG, is a technique that connects a large
+language model to an external knowledge source. Instead of relying only on what
+the model memorized during training, RAG retrieves relevant documents at query
+time and inserts them into the prompt as context. This grounds the answer in real
+data and reduces hallucinations.
+
+A RAG pipeline has two stages: indexing and querying. During indexing, documents
+are loaded, split into chunks, embedded, and stored in a vector database. During
+querying, the user question is embedded, the most similar chunks are retrieved,
+and the language model generates an answer conditioned on those chunks.
+
+Chunking strategy matters a great deal. Chunks that are too large dilute the
+relevant signal and waste context, while chunks that are too small lose
+necessary surrounding meaning. A common approach uses a recursive character
+splitter with a chunk size of several hundred tokens and an overlap of ten to
+twenty percent to preserve continuity across boundaries.
+
+The main advantages of RAG are that knowledge can be updated by changing the
+documents rather than retraining the model, that answers can cite their sources,
+and that private or domain-specific data can be used without fine-tuning. The
+main limitations are that answer quality depends heavily on retrieval quality,
+and that long retrieved contexts increase latency and cost.

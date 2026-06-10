@@ -1,0 +1,25 @@
+# Neural Networks and Deep Learning
+
+A neural network is a model composed of layers of interconnected units called
+neurons. Each neuron computes a weighted sum of its inputs, adds a bias, and
+passes the result through a non-linear activation function such as ReLU, sigmoid,
+or tanh. The non-linearity is what allows networks to approximate complex
+functions.
+
+Deep learning refers to neural networks with many hidden layers. Training is
+performed using backpropagation, which computes the gradient of a loss function
+with respect to every weight using the chain rule. An optimizer such as
+stochastic gradient descent or Adam then updates the weights to reduce the loss.
+
+Convolutional neural networks, or CNNs, are specialized for grid-like data such
+as images. They use convolutional filters to detect local patterns like edges
+and textures, and pooling layers to reduce spatial resolution. Recurrent neural
+networks, or RNNs, were designed for sequential data, but they struggle with
+long-range dependencies because of vanishing gradients. Long Short-Term Memory
+networks, or LSTMs, partially solve this with gating mechanisms.
+
+Regularization methods for neural networks include dropout, which randomly
+deactivates neurons during training, and batch normalization, which stabilizes
+and accelerates training by normalizing layer activations. The learning rate is
+one of the most important hyperparameters: too high and training diverges, too
+low and training is painfully slow.

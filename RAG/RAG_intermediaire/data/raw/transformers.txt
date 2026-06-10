@@ -1,0 +1,26 @@
+# The Transformer Architecture
+
+The Transformer is a neural network architecture introduced in 2017 in the paper
+"Attention Is All You Need". It replaced recurrence with a mechanism called
+self-attention, which lets every token in a sequence attend directly to every
+other token. This makes Transformers highly parallelizable and effective at
+modeling long-range dependencies.
+
+The core operation is scaled dot-product attention. For each token, the model
+computes a query, a key, and a value vector. Attention scores are obtained by
+taking the dot product of queries and keys, scaling by the square root of the key
+dimension, and applying a softmax. The output is a weighted sum of the value
+vectors. Multi-head attention runs several attention operations in parallel and
+concatenates the results, allowing the model to capture different types of
+relationships.
+
+Because self-attention is order-invariant, Transformers add positional encodings
+to give the model information about token position. Each Transformer block also
+contains a position-wise feed-forward network, residual connections, and layer
+normalization.
+
+There are three common families. Encoder-only models such as BERT are used for
+understanding tasks like classification. Decoder-only models such as the GPT
+family generate text autoregressively, predicting one token at a time. Encoder-
+decoder models such as T5 are used for sequence-to-sequence tasks like
+translation and summarization.

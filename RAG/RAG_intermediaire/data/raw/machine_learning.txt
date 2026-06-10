@@ -1,0 +1,29 @@
+# Machine Learning Fundamentals
+
+Machine learning is a branch of artificial intelligence in which systems learn
+patterns from data instead of being explicitly programmed with rules. The three
+main paradigms are supervised learning, unsupervised learning, and reinforcement
+learning.
+
+In supervised learning, a model is trained on labeled examples, where each input
+is paired with a known target. Classification predicts a discrete label, while
+regression predicts a continuous value. Common supervised algorithms include
+linear regression, logistic regression, decision trees, random forests, and
+gradient boosting machines.
+
+Unsupervised learning works on unlabeled data and tries to discover structure.
+Clustering algorithms such as K-Means group similar points together, while
+dimensionality reduction techniques such as PCA and t-SNE compress data into
+fewer dimensions while preserving important relationships.
+
+Reinforcement learning trains an agent to take actions in an environment in order
+to maximize a cumulative reward signal. It is widely used in robotics, game
+playing, and sequential decision making.
+
+A central challenge in machine learning is the bias-variance tradeoff. A model
+with high bias underfits and is too simple to capture the underlying pattern,
+while a model with high variance overfits and memorizes noise in the training
+data. Techniques such as cross-validation, regularization, and early stopping
+help control overfitting. The dataset is typically split into training,
+validation, and test sets so that performance can be measured on data the model
+has never seen.

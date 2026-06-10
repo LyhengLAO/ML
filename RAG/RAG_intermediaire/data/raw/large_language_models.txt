@@ -1,0 +1,24 @@
+# Large Language Models
+
+A large language model, or LLM, is a Transformer-based model trained on vast
+amounts of text to predict the next token in a sequence. Through this simple
+objective, models learn grammar, facts, reasoning patterns, and stylistic
+conventions. Scaling the number of parameters and the amount of training data
+tends to improve capability, a relationship described by scaling laws.
+
+Llama is a family of open-weight language models released by Meta. Because the
+weights are openly available, Llama models can be downloaded and run locally,
+which makes them attractive for privacy-sensitive and API-free applications.
+Tools such as Ollama make it easy to run quantized versions of Llama and other
+open models on a personal computer with a single command.
+
+Quantization reduces the numerical precision of model weights, for example from
+16 bits to 4 bits. This dramatically lowers memory usage and speeds up inference,
+at the cost of a small reduction in quality, allowing capable models to run on
+consumer hardware.
+
+Two important inference settings are temperature and context window. Temperature
+controls randomness: a value near zero makes output deterministic and focused,
+while higher values increase diversity and creativity. The context window is the
+maximum number of tokens the model can attend to at once, which limits how much
+retrieved context a RAG system can supply in a single prompt.

@@ -1,0 +1,22 @@
+# Vector Databases
+
+A vector database stores high-dimensional embeddings and supports fast similarity
+search over them. Instead of matching exact keywords, it finds the vectors that
+are nearest to a query vector. This is known as nearest-neighbor search.
+
+Computing the exact nearest neighbors over millions of vectors is expensive, so
+most systems use Approximate Nearest Neighbor, or ANN, algorithms. A widely used
+ANN method is HNSW, which stands for Hierarchical Navigable Small World. HNSW
+builds a multi-layer graph that allows search to start coarse and progressively
+refine, giving sub-linear query time with high recall.
+
+Chroma is an open-source vector database designed to run locally with no API key
+required. It persists embeddings to disk, supports metadata filtering, and
+integrates directly with LangChain. By default Chroma uses cosine distance and
+the HNSW index, which makes it a convenient choice for prototypes and portfolio
+projects.
+
+Metadata filtering is an important feature: each vector can carry attributes such
+as source, author, or date, and queries can restrict the search to vectors that
+match certain conditions. This combination of semantic search and structured
+filtering is what makes vector databases practical for real applications.

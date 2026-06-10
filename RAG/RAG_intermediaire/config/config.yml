@@ -1,0 +1,55 @@
+# =====================================================================
+# Configuration centrale du projet RAG
+# Tout est paramétrable ici.
+# =====================================================================
+
+paths:
+  raw_data_dir: "data/raw"
+  eval_dataset: "data/eval_dataset"
+  chroma_dir: "chroma_db"
+  results_dir: "results"
+
+embeddings:
+  # provider: "huggingface" (prod) ou "tfidf" (offline, sans téléchargement)
+  provider: "huggingface"
+  model_name: "sentence-transformers/all-MiniLM-L6-v2"
+  device: "cpu"                    # "cuda" si GPU disponible
+  normalize: true                  # nécessaire pour la similarité cosinus
+
+llm:
+  # provider: "ollama" (prod) ou "extractive" (offline, lecteur extractif)
+  provider: "ollama"
+  model_name: "llama3.1"
+  temperature: 0.0                 # déterministe pour une éval reproductible
+  base_url: "http://localhost:11434"
+  num_ctx: 4096
+
+# ---------------------------------------------------------------------
+# Pipeline BASELINE : RAG naïf (chunking simple + retrieval dense top-k)
+# ---------------------------------------------------------------------
+baseline:
+  chunk_size: 1000
+  chunk_overlap: 0
+  collection_name: "rag_baseline"
+  retrieval_k: 4
+
+# ---------------------------------------------------------------------
+# Pipeline OPTIMISÉ : chunking fin + recherche hybride + reranking + multi-query
+# ---------------------------------------------------------------------
+optimized:
+  chunk_size: 500
+  chunk_overlap: 80
+  collection_name: "rag_optimized"
+  # On récupère large puis on rerank pour ne garder que le meilleur
+  retrieval_k_dense: 10
+  retrieval_k_bm25: 10
+  ensemble_weights: [0.5, 0.5]     # [dense, bm25]
+  rerank_top_n: 4                  # nombre final de docs après reranking
+  reranker: "cross_encoder"           # "cross_encoder" (prod) ou "tfidf" (offline)
+  reranker_model: "cross-encoder/ms-marco-MiniLM-L-6-v2"
+  use_multi_query: true            # reformulation de la question via le LLM
+
+evaluation:
+  retrieval_k: 4                   # k commun pour comparer hit_rate@k / mrr
+  run_ragas: false                 # true = métriques RAGAS (LLM-judge, plus lent)
+  semantic_similarity_threshold: 0.6

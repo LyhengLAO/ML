@@ -1,0 +1,22 @@
+# Text Embeddings
+
+An embedding is a dense vector representation of text in a continuous space where
+semantic similarity corresponds to geometric proximity. Two sentences with
+similar meaning are mapped to nearby vectors, even if they share no words. This
+property is what makes embeddings the foundation of semantic search.
+
+Modern embedding models are usually based on Transformer encoders fine-tuned with
+contrastive learning. Sentence-Transformers models such as all-MiniLM-L6-v2
+produce 384-dimensional vectors and offer an excellent balance between speed and
+quality, which makes them popular for local, API-free retrieval systems.
+
+Similarity between embeddings is most commonly measured with cosine similarity,
+which compares the angle between two vectors and ignores their magnitude. A
+cosine similarity of 1 means identical direction, 0 means orthogonal, and -1
+means opposite. Euclidean distance and dot product are also used depending on
+whether vectors are normalized.
+
+A key practical detail is that the same embedding model must be used to encode
+both the documents and the queries. Mixing different embedding models breaks the
+shared geometry and destroys retrieval quality. Embeddings are typically computed
+once for the corpus, stored in a vector database, and reused across many queries.
