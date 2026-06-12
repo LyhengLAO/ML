@@ -1,0 +1,14 @@
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+.env
+chroma_db/
+.cache/
+*.log
+.DS_Store
+.ipynb_checkpoints/
+# On garde results/ versionné pour montrer les métriques dans le README,
+# mais on ignore les caches de modèles HuggingFace s'ils traînent.
+.huggingface/
