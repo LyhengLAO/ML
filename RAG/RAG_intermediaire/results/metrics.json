@@ -1,0 +1,36 @@
+{
+  "baseline": {
+    "pipeline": "baseline",
+    "n_questions": 20,
+    "hit_rate@k": 1.0,
+    "mrr@k": 1.0,
+    "precision@k": 0.425,
+    "context_recall": 1.0,
+    "answer_similarity": 0.3813,
+    "answer_correctness": 0.25,
+    "rouge_l": 0.3136,
+    "token_f1": 0.366,
+    "avg_latency_s": 0.0021
+  },
+  "optimized": {
+    "pipeline": "optimized",
+    "n_questions": 20,
+    "hit_rate@k": 1.0,
+    "mrr@k": 1.0,
+    "precision@k": 0.5375,
+    "context_recall": 1.0,
+    "answer_similarity": 0.4098,
+    "answer_correctness": 0.3,
+    "rouge_l": 0.3307,
+    "token_f1": 0.3777,
+    "avg_latency_s": 0.005
+  },
+  "config": {
+    "mode": "offline (TF-IDF + extractif)",
+    "embeddings": "tfidf",
+    "llm": "extractive",
+    "retrieval_k": 4,
+    "n_docs": 8
+  },
+  "comparison_markdown": "| Métrique | Baseline | Optimisé | Δ | Amélioration |\n|---|---:|---:|---:|---:|\n| `hit_rate@k` | 1.000 | 1.000 | +0.000 | ⚪ +0.0% |\n| `mrr@k` | 1.000 | 1.000 | +0.000 | ⚪ +0.0% |\n| `precision@k` | 0.425 | 0.537 | +0.112 | 🟢 +26.5% |\n| `context_recall` | 1.000 | 1.000 | +0.000 | ⚪ +0.0% |\n| `answer_similarity` | 0.381 | 0.410 | +0.029 | 🟢 +7.5% |\n| `answer_correctness` | 0.250 | 0.300 | +0.050 | 🟢 +20.0% |\n| `rouge_l` | 0.314 | 0.331 | +0.017 | 🟢 +5.5% |\n| `token_f1` | 0.366 | 0.378 | +0.012 | 🟢 +3.2% |\n| `avg_latency_s` | 0.002 | 0.005 | +0.003 | 🔴 -138.1% |"
+}

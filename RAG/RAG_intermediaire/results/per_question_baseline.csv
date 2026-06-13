@@ -1,0 +1,87 @@
+id,question,answer,ground_truth,retrieved_sources,gold_sources,latency_s,semantic_similarity,answer_correct,rouge_l,token_f1,hit_rate,mrr,precision_at_k,context_recall
+q01,What are the three main paradigms of machine learning?,"The three
+main paradigms are supervised learning, unsupervised learning, and reinforcement
+learning. The main advantages of RAG are that knowledge can be updated by changing the
+documents rather than retraining the model, that answers can cite their sources,
+and that private or domain-specific data can be used without fine-tuning.","The three main paradigms of machine learning are supervised learning, unsupervised learning, and reinforcement learning.","[""machine_learning.txt"", ""retrieval_augmented_generation.txt"", ""machine_learning.txt"", ""neural_networks.txt""]","[""machine_learning.txt""]",0.004,0.5791,0.0,0.3636,0.3939,1.0,1.0,0.5,1.0
+q02,What is the difference between classification and regression in supervised learning?,"The three
+main paradigms are supervised learning, unsupervised learning, and reinforcement
+learning. In supervised learning, a model is trained on labeled examples, where each input
+is paired with a known target.","Classification predicts a discrete label, while regression predicts a continuous value.","[""machine_learning.txt"", ""transformers.txt"", ""machine_learning.txt"", ""neural_networks.txt""]","[""machine_learning.txt""]",0.002,0.0,0.0,0.0952,0.0952,1.0,1.0,0.5,1.0
+q03,What does the bias-variance tradeoff describe?,"A central challenge in machine learning is the bias-variance tradeoff. A model
+with high bias underfits and is too simple to capture the underlying pattern,
+while a model with high variance overfits and memorizes noise in the training
+data.","It describes the tradeoff between a high-bias model that underfits because it is too simple, and a high-variance model that overfits by memorizing noise in the training data.","[""machine_learning.txt"", ""neural_networks.txt"", ""embeddings.txt"", ""rag_evaluation.txt""]","[""machine_learning.txt""]",0.002,0.7937,1.0,0.5143,0.6,1.0,1.0,0.25,1.0
+q04,What is backpropagation used for in neural networks?,"# Neural Networks and Deep Learning
+
+A neural network is a model composed of layers of interconnected units called
+neurons. The non-linearity is what allows networks to approximate complex
+functions.","Backpropagation computes the gradient of the loss function with respect to every weight using the chain rule, so that an optimizer can update the weights to reduce the loss.","[""neural_networks.txt"", ""neural_networks.txt"", ""transformers.txt"", ""embeddings.txt""]","[""neural_networks.txt""]",0.002,0.0,0.0,0.1017,0.1017,1.0,1.0,0.5,1.0
+q05,What is dropout?,"The non-linearity is what allows networks to approximate complex
+functions. Regularization methods for neural networks include dropout, which randomly
+deactivates neurons during training, and batch normalization, which stabilizes
+and accelerates training by normalizing layer activations.",Dropout is a regularization method that randomly deactivates neurons during training to reduce overfitting.,"[""neural_networks.txt"", ""embeddings.txt"", ""neural_networks.txt"", ""retrieval_augmented_generation.txt""]","[""neural_networks.txt""]",0.002,0.4058,0.0,0.28,0.36,1.0,1.0,0.5,1.0
+q06,Which type of neural network is specialized for images?,"Convolutional neural networks, or CNNs, are specialized for grid-like data such
+as images. # Neural Networks and Deep Learning
+
+A neural network is a model composed of layers of interconnected units called
+neurons.","Convolutional neural networks, or CNNs, are specialized for grid-like data such as images.","[""neural_networks.txt"", ""neural_networks.txt"", ""transformers.txt"", ""transformers.txt""]","[""neural_networks.txt""]",0.002,0.7302,1.0,0.5957,0.5957,1.0,1.0,0.5,1.0
+q07,What mechanism did the Transformer use to replace recurrence?,"It replaced recurrence with a mechanism called
+self-attention, which lets every token in a sequence attend directly to every
+other token. # The Transformer Architecture
+
+The Transformer is a neural network architecture introduced in 2017 in the paper
+""Attention Is All You Need"".","The Transformer replaced recurrence with self-attention, which lets every token attend directly to every other token.","[""transformers.txt"", ""neural_networks.txt"", ""vector_databases.txt"", ""transformers.txt""]","[""transformers.txt""]",0.002,0.6837,1.0,0.5,0.5667,1.0,1.0,0.5,1.0
+q08,"What are query, key, and value vectors used for in attention?","For each token, the model
+computes a query, a key, and a value vector. Attention scores are obtained by
+taking the dot product of queries and keys, scaling by the square root of the key
+dimension, and applying a softmax.","In scaled dot-product attention, each token produces a query, key, and value vector; attention scores come from the dot product of queries and keys, scaled and passed through softmax, and the output is a weighted sum of the value vectors.","[""transformers.txt"", ""vector_databases.txt"", ""embeddings.txt"", ""embeddings.txt""]","[""transformers.txt""]",0.002,0.5644,0.0,0.4938,0.5679,1.0,1.0,0.25,1.0
+q09,What is the difference between encoder-only and decoder-only Transformer models?,"Decoder-only models such as the GPT
+family generate text autoregressively, predicting one token at a time. Encoder-
+decoder models such as T5 are used for sequence-to-sequence tasks like
+translation and summarization.","Encoder-only models such as BERT are used for understanding tasks like classification, while decoder-only models such as GPT generate text autoregressively one token at a time.","[""transformers.txt"", ""large_language_models.txt"", ""embeddings.txt"", ""transformers.txt""]","[""transformers.txt""]",0.002,0.6941,1.0,0.4516,0.7419,1.0,1.0,0.5,1.0
+q10,What does cosine similarity measure between two embeddings?,"Similarity between embeddings is most commonly measured with cosine similarity,
+which compares the angle between two vectors and ignores their magnitude. # Text Embeddings
+
+An embedding is a dense vector representation of text in a continuous space where
+semantic similarity corresponds to geometric proximity.","Cosine similarity measures the angle between two vectors and ignores their magnitude; 1 means identical direction, 0 means orthogonal, and -1 means opposite.","[""embeddings.txt"", ""vector_databases.txt"", ""embeddings.txt"", ""rag_evaluation.txt""]","[""embeddings.txt""]",0.002,0.2926,0.0,0.3333,0.3333,1.0,1.0,0.5,1.0
+q11,Why must the same embedding model be used for documents and queries?,"A key practical detail is that the same embedding model must be used to encode
+both the documents and the queries. Embeddings are typically computed
+once for the corpus, stored in a vector database, and reused across many queries.",Because mixing different embedding models breaks the shared geometry of the vector space and destroys retrieval quality.,"[""embeddings.txt"", ""retrieval_augmented_generation.txt"", ""embeddings.txt"", ""rag_evaluation.txt""]","[""embeddings.txt""]",0.002,0.0869,0.0,0.1786,0.1786,1.0,1.0,0.5,1.0
+q12,What does the HNSW algorithm do in a vector database?,"Embeddings are typically computed
+once for the corpus, stored in a vector database, and reused across many queries. During indexing, documents
+are loaded, split into chunks, embedded, and stored in a vector database.","HNSW, Hierarchical Navigable Small World, builds a multi-layer graph for approximate nearest-neighbor search, giving sub-linear query time with high recall.","[""vector_databases.txt"", ""embeddings.txt"", ""vector_databases.txt"", ""retrieval_augmented_generation.txt""]","[""vector_databases.txt""]",0.002,0.0,0.0,0.0357,0.0714,1.0,1.0,0.5,1.0
+q13,Why is Chroma convenient for local API-free projects?,"By default Chroma uses cosine distance and
+the HNSW index, which makes it a convenient choice for prototypes and portfolio
+projects. Sentence-Transformers models such as all-MiniLM-L6-v2
+produce 384-dimensional vectors and offer an excellent balance between speed and
+quality, which makes them popular for local, API-free retrieval systems.","Chroma is an open-source vector database that runs locally with no API key, persists embeddings to disk, supports metadata filtering, and integrates with LangChain.","[""vector_databases.txt"", ""embeddings.txt"", ""large_language_models.txt"", ""neural_networks.txt""]","[""vector_databases.txt""]",0.002,0.0822,0.0,0.0769,0.1026,1.0,1.0,0.25,1.0
+q14,What are the two stages of a RAG pipeline?,"A RAG pipeline has two stages: indexing and querying. Instead of relying only on what
+the model memorized during training, RAG retrieves relevant documents at query
+time and inserts them into the prompt as context.","The two stages are indexing, where documents are loaded, chunked, embedded and stored, and querying, where the question is embedded, similar chunks are retrieved, and the model generates an answer from them.","[""retrieval_augmented_generation.txt"", ""rag_evaluation.txt"", ""retrieval_augmented_generation.txt"", ""large_language_models.txt""]","[""retrieval_augmented_generation.txt""]",0.002,0.2651,0.0,0.2388,0.3284,1.0,1.0,0.5,1.0
+q15,How does RAG help reduce hallucinations?,"# Retrieval-Augmented Generation
+
+Retrieval-Augmented Generation, or RAG, is a technique that connects a large
+language model to an external knowledge source. Instead of relying only on what
+the model memorized during training, RAG retrieves relevant documents at query
+time and inserts them into the prompt as context.","RAG retrieves relevant documents at query time and inserts them into the prompt as context, grounding the answer in real data rather than only the model's memorized knowledge.","[""retrieval_augmented_generation.txt"", ""machine_learning.txt"", ""rag_evaluation.txt"", ""neural_networks.txt""]","[""retrieval_augmented_generation.txt""]",0.002,0.556,0.0,0.3896,0.5195,1.0,1.0,0.25,1.0
+q16,What is quantization and what is its benefit for running LLMs?,"Quantization reduces the numerical precision of model weights, for example from
+16 bits to 4 bits. Regularization methods for neural networks include dropout, which randomly
+deactivates neurons during training, and batch normalization, which stabilizes
+and accelerates training by normalizing layer activations.","Quantization reduces the numerical precision of model weights, for example from 16 bits to 4 bits, which lowers memory usage and speeds up inference so capable models can run on consumer hardware.","[""large_language_models.txt"", ""neural_networks.txt"", ""neural_networks.txt"", ""retrieval_augmented_generation.txt""]","[""large_language_models.txt""]",0.002,0.4673,0.0,0.4932,0.4932,1.0,1.0,0.25,1.0
+q17,What does the temperature setting control during LLM inference?,"This dramatically lowers memory usage and speeds up inference,
+at the cost of a small reduction in quality, allowing capable models to run on
+consumer hardware. Two important inference settings are temperature and context window.","Temperature controls randomness: a value near zero makes output deterministic and focused, while higher values increase diversity and creativity.","[""large_language_models.txt"", ""machine_learning.txt"", ""large_language_models.txt"", ""transformers.txt""]","[""large_language_models.txt""]",0.002,0.0628,0.0,0.0741,0.1481,1.0,1.0,0.5,1.0
+q18,What does Hit Rate at k measure when evaluating retrieval?,"Hit Rate at k measures
+whether at least one relevant document appears in the top k results. Instead of relying only on what
+the model memorized during training, RAG retrieves relevant documents at query
+time and inserts them into the prompt as context.",Hit Rate at k measures whether at least one relevant document appears in the top k retrieved results.,"[""rag_evaluation.txt"", ""retrieval_augmented_generation.txt"", ""embeddings.txt"", ""neural_networks.txt""]","[""rag_evaluation.txt""]",0.002,0.6339,1.0,0.5574,0.5574,1.0,1.0,0.25,1.0
+q19,What four core metrics does the RAGAS framework use?,"The RAGAS framework popularized a reference-light evaluation approach using four
+core metrics: faithfulness, answer relevancy, context precision, and context
+recall. Generation is evaluated with metrics that compare the produced answer to a
+reference or to the retrieved context.","RAGAS uses faithfulness, answer relevancy, context precision, and context recall.","[""rag_evaluation.txt"", ""rag_evaluation.txt"", ""neural_networks.txt"", ""transformers.txt""]","[""rag_evaluation.txt""]",0.002,0.555,0.0,0.3673,0.3673,1.0,1.0,0.5,1.0
+q20,What does faithfulness measure in RAG generation evaluation?,"The RAGAS framework popularized a reference-light evaluation approach using four
+core metrics: faithfulness, answer relevancy, context precision, and context
+recall. Beyond quality, practical evaluation also tracks latency and cost, since
+an accurate system that is too slow or too expensive may be unusable in
+production.",Faithfulness measures whether the generated answer is supported by the retrieved context and penalizes hallucination.,"[""rag_evaluation.txt"", ""retrieval_augmented_generation.txt"", ""rag_evaluation.txt"", ""retrieval_augmented_generation.txt""]","[""rag_evaluation.txt""]",0.002,0.1735,0.0,0.1311,0.1967,1.0,1.0,0.5,1.0
