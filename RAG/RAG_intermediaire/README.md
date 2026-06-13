@@ -88,7 +88,7 @@ flowchart LR
 
 > Table **générée automatiquement** par `scripts/run_evaluation.py` (puis `sync_readme.py`) à partir de `results/metrics.json` — entre les marqueurs ci-dessous. **Aucune valeur n'est saisie à la main.**
 >
-> **Run ayant produit la table ci-dessous** : mode `offline (TF-IDF + lecteur extractif)`, corpus de **8 documents**, **20 questions** à vérité terrain, `retrieval_k = 4`. Relancez `make eval` avec **Ollama + MiniLM** (mode production) pour régénérer la même table avec la stack complète.
+> **Run ayant produit la table ci-dessous** : mode `offline (TF-IDF + lecteur extractif)`, corpus de **8 documents**, **20 questions** à vérité terrain, `retrieval_k = 4`. Relancez `python scripts/run_evaluation.py` avec **Ollama + MiniLM** (mode production) pour régénérer la même table avec la stack complète.
 
 <!--METRICS_START-->
 
@@ -112,7 +112,7 @@ flowchart LR
 - **métriques de génération** (`answer_similarity`, `answer_correctness`, `rouge_l`, `token_f1`) en hausse → réponses plus proches de la référence ;
 - **latence** plus élevée pour l'optimisé → coût du multi-query + reranking (compromis qualité ↔ vitesse).
 
-Sur un corpus plus grand et plus bruité (cf. `make data` qui télécharge des pages Wikipédia), l'écart sur `hit_rate@k` / `mrr@k` se creuse également, le retrieval n'étant plus saturé.
+Sur un corpus plus grand et plus bruité (cf. `python scripts/download_data.py` qui télécharge des pages Wikipédia), l'écart sur `hit_rate@k` / `mrr@k` se creuse également, le retrieval n'étant plus saturé.
 
 ### Familles de métriques
 
@@ -129,7 +129,7 @@ Sur un corpus plus grand et plus bruité (cf. `make data` qui télécharge des p
 
 ```bash
 pip install -r requirements.txt
-make eval-offline      # TF-IDF + lecteur extractif → results/ + README mis à jour
+python scripts/run_evaluation.py --offline   # TF-IDF + lecteur extractif → results/ + README mis à jour
 ```
 
 ### Option B — Mode production (qualité maximale)
@@ -140,13 +140,13 @@ ollama pull llama3.1
 # 2. Dépendances
 pip install -r requirements.txt
 # 3. Lancer
-make index             # (re)construit les index ChromaDB
-make eval              # évaluation MiniLM + Llama → results/ + README mis à jour
-make app               # frontend Streamlit
+python scripts/build_index.py                # (re)construit les index ChromaDB
+python scripts/run_evaluation.py             # évaluation MiniLM + Llama → results/ + README mis à jour
+streamlit run app/streamlit_app.py           # frontend Streamlit
 ```
 
 > Le corpus fourni dans `data/raw/` permet de tout faire tourner immédiatement.
-> `make data` (optionnel) télécharge des pages Wikipédia pour enrichir/durcir le corpus.
+> `python scripts/download_data.py` (optionnel) télécharge des pages Wikipédia pour enrichir/durcir le corpus.
 
 ---
 
